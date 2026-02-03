@@ -3,10 +3,20 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --open",
+    "dev": "ng serve --open",
+    "serve": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
+    "build:watch": "ng build --watch --configuration development",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "test:headless": "ng test --watch=false --browsers=ChromeHeadless",
+    "lint": "ng lint",
+    "format": "prettier --write \"src/**/*.{ts,html,css,scss,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,html,css,scss,json}\"",
+    "clean": "rimraf dist .angular/cache",
+    "clean:install": "rimraf node_modules package-lock.json && npm install"
   },
   "prettier": {
     "printWidth": 100,

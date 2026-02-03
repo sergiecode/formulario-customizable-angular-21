@@ -5,11 +5,15 @@
 /tmp
 /out-tsc
 /bazel-out
+*.js.map
 
 # Node
 /node_modules
 npm-debug.log
 yarn-error.log
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
 # IDEs and editors
 .idea/
@@ -19,6 +23,7 @@ yarn-error.log
 *.launch
 .settings/
 *.sublime-workspace
+*.sublime-project
 
 # Visual Studio Code
 .vscode/*
@@ -36,7 +41,30 @@ yarn-error.log
 /libpeerconnection.log
 testem.log
 /typings
+*.log
 
 # System files
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
+*~
+
+# Environment files
+.env
+.env.local
+.env.*.local
+*.env
+
+# Build and temp files
+*.tmp
+*.temp
+.cache/
+
+# Test coverage
+/coverage
+/.nyc_output
+
+# E2E
+/e2e/*.js
+/e2e/*.map

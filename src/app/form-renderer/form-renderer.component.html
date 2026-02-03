@@ -1,0 +1,156 @@
+<div class="form-renderer-container">
+  <header class="renderer-header">
+    <h1>🎬 Vista Previa</h1>
+    <p>Así se verá tu formulario</p>
+  </header>
+
+  @if (hasFields()) {
+    <div class="renderer-content">
+      <!-- Formulario dinámico -->
+      <section class="dynamic-form-section">
+        <div class="form-card">
+          <h2>{{ formConfig()?.title || 'Formulario Dinámico' }}</h2>
+          
+          @if (formConfig()?.description) {
+            <p class="form-description">{{ formConfig()!.description }}</p>
+          }
+
+          <form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()" class="dynamic-form">
+            @for (field of getSortedFields(); track field.id) {
+              <div class="form-field">
+                <!-- Campo Text -->
+                @if (field.type === 'text') {
+                  <label [for]="field.name" class="field-label">
+                    {{ field.label }}
+                    @if (field.properties.required) {
+                      <span class="required-mark">*</span>
+                    }
+                  </label>
+                  <input
+                    [id]="field.name"
+                    [formControlName]="field.name"
+                    type="text"
+                    class="form-input"
+                    [class.error-input]="hasError(field.name)"
+                    [placeholder]="field.properties.placeholder || ''"
+                  />
+                  @if (hasError(field.name)) {
+                    <span class="error-message">{{ getErrorMessage(field) }}</span>
+                  }
+                }
+
+                <!-- Campo Textarea -->
+                @if (field.type === 'textarea') {
+                  <label [for]="field.name" class="field-label">
+                    {{ field.label }}
+                    @if (field.properties.required) {
+                      <span class="required-mark">*</span>
+                    }
+                  </label>
+                  <textarea
+                    [id]="field.name"
+                    [formControlName]="field.name"
+                    class="form-textarea"
+                    [class.error-input]="hasError(field.name)"
+                    [placeholder]="field.properties.placeholder || ''"
+                    rows="4"
+                  ></textarea>
+                  @if (hasError(field.name)) {
+                    <span class="error-message">{{ getErrorMessage(field) }}</span>
+                  }
+                }
+
+                <!-- Campo Checkbox -->
+                @if (field.type === 'checkbox') {
+                  <div class="checkbox-wrapper">
+                    <input
+                      [id]="field.name"
+                      [formControlName]="field.name"
+                      type="checkbox"
+                      class="form-checkbox"
+                    />
+                    <label [for]="field.name" class="checkbox-label">
+                      {{ field.label }}
+                      @if (field.properties.required) {
+                        <span class="required-mark">*</span>
+                      }
+                    </label>
+                  </div>
+                  @if (hasError(field.name)) {
+                    <span class="error-message">{{ getErrorMessage(field) }}</span>
+                  }
+                }
+              </div>
+            }
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-submit" [disabled]="dynamicForm.invalid">
+                📨 Enviar Formulario
+              </button>
+              <button type="button" class="btn btn-reset" (click)="resetForm()">
+                🔄 Resetear
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Panel de información -->
+      <section class="info-section">
+        <!-- Estado del formulario -->
+        <div class="info-card">
+          <h3>📊 Estado del Formulario</h3>
+          <div class="status-grid">
+            <div class="status-item">
+              <span class="status-label">Estado:</span>
+              <span class="status-value" [class.valid]="dynamicForm.valid" [class.invalid]="dynamicForm.invalid">
+                {{ dynamicForm.valid ? '✅ Válido' : '❌ Inválido' }}
+              </span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">Campos:</span>
+              <span class="status-value">{{ getSortedFields().length }}</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">Tocado:</span>
+              <span class="status-value">{{ dynamicForm.touched ? 'Sí' : 'No' }}</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">Modificado:</span>
+              <span class="status-value">{{ dynamicForm.dirty ? 'Sí' : 'No' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resultado del envío -->
+        @if (formSubmitted() && formValues()) {
+          <div class="info-card success-card">
+            <h3>✅ Formulario Enviado</h3>
+            <p>Los datos se han procesado correctamente:</p>
+            <pre class="json-display">{{ formValues() | json }}</pre>
+          </div>
+        }
+
+        <!-- Valores actuales -->
+        <div class="info-card">
+          <h3>🔍 Valores Actuales</h3>
+          <pre class="json-display">{{ dynamicForm.value | json }}</pre>
+        </div>
+
+        <!-- Configuración JSON -->
+        <div class="info-card">
+          <h3>⚙️ Configuración JSON</h3>
+          <p class="info-text">Esta es la configuración que genera el formulario:</p>
+          <pre class="json-display">{{ formConfig() | json }}</pre>
+        </div>
+      </section>
+    </div>
+  } @else {
+    <div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <h2>Sin campos configurados</h2>
+      <p>Dirígete a la <strong>Parte A: Constructor</strong> para agregar campos al formulario</p>
+      <p class="help-text">El formulario se actualizará automáticamente cuando agregues campos</p>
+    </div>
+  }
+</div>

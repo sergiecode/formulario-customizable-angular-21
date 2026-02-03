@@ -1,0 +1,246 @@
+<div class="form-builder-container">
+  <header class="builder-header">
+    <h1>🎨 Constructor</h1>
+    <p>Diseñá tu formulario</p>
+  </header>
+
+  <div class="builder-content">
+    <!-- Panel de configuración de campos -->
+    <section class="field-config-panel">
+      <h2>{{ isEditing() ? '✏️ Editar Campo' : '➕ Agregar Campo' }}</h2>
+      
+      <form [formGroup]="fieldForm" class="field-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="type">Tipo de Campo *</label>
+            <select id="type" formControlName="type" class="form-control">
+              <option *ngFor="let fieldType of fieldTypes" [value]="fieldType.value">
+                {{ fieldType.label }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="label">Label *</label>
+            <input
+              id="label"
+              type="text"
+              formControlName="label"
+              class="form-control"
+              placeholder="Ej: Nombre completo"
+            />
+            <span class="error" *ngIf="fieldForm.get('label')?.invalid && fieldForm.get('label')?.touched">
+              El label es requerido
+            </span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Nombre / Key *</label>
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              class="form-control"
+              placeholder="Ej: nombre_completo"
+            />
+            <span class="error" *ngIf="fieldForm.get('name')?.invalid && fieldForm.get('name')?.touched">
+              Nombre requerido (solo letras, números y guiones bajos)
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label for="order">Orden *</label>
+            <input
+              id="order"
+              type="number"
+              formControlName="order"
+              class="form-control"
+              min="0"
+            />
+          </div>
+        </div>
+
+        <!-- Placeholder: Solo para text y textarea -->
+        <div class="form-row" *ngIf="fieldForm.get('type')?.value === 'text' || fieldForm.get('type')?.value === 'textarea'">
+          <div class="form-group full-width">
+            <label for="placeholder">Placeholder</label>
+            <input
+              id="placeholder"
+              type="text"
+              formControlName="placeholder"
+              class="form-control"
+              placeholder="Texto de ayuda"
+            />
+          </div>
+        </div>
+
+        <!-- Valor por defecto -->
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="defaultValue">
+              {{ fieldForm.get('type')?.value === 'checkbox' ? 'Valor por defecto (activado/desactivado)' : 'Valor por defecto' }}
+            </label>
+            <input
+              *ngIf="fieldForm.get('type')?.value !== 'checkbox'"
+              id="defaultValue"
+              type="text"
+              formControlName="defaultValue"
+              class="form-control"
+            />
+            <div *ngIf="fieldForm.get('type')?.value === 'checkbox'" class="form-group-checkbox" style="margin-top: 8px;">
+              <input
+                id="defaultValue"
+                type="checkbox"
+                formControlName="defaultValue"
+              />
+              <label for="defaultValue">Activado por defecto</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Longitudes: Solo para text y textarea -->
+        <div class="form-row" *ngIf="fieldForm.get('type')?.value === 'text' || fieldForm.get('type')?.value === 'textarea'">
+          <div class="form-group">
+            <label for="minLength">Longitud Mínima</label>
+            <input
+              id="minLength"
+              type="number"
+              formControlName="minLength"
+              class="form-control"
+              min="0"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="maxLength">Longitud Máxima</label>
+            <input
+              id="maxLength"
+              type="number"
+              formControlName="maxLength"
+              class="form-control"
+              min="0"
+            />
+          </div>
+        </div>
+
+        <div class="form-row checkboxes">
+          <div class="form-group-checkbox">
+            <input
+              id="required"
+              type="checkbox"
+              formControlName="required"
+            />
+            <label for="required">Campo requerido</label>
+          </div>
+
+          <div class="form-group-checkbox">
+            <input
+              id="disabled"
+              type="checkbox"
+              formControlName="disabled"
+            />
+            <label for="disabled">Campo deshabilitado</label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          @if (isEditing()) {
+            <button type="button" class="btn btn-success" (click)="saveEditedField()" [disabled]="fieldForm.invalid">
+              💾 Guardar Cambios
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="cancelEdit()">
+              ❌ Cancelar
+            </button>
+          } @else {
+            <button type="button" class="btn btn-primary" (click)="addField()" [disabled]="fieldForm.invalid">
+              ➕ Agregar Campo
+            </button>
+          }
+        </div>
+      </form>
+    </section>
+
+    <!-- Panel de campos configurados -->
+    <section class="fields-list-panel">
+      <h2>📋 Campos Configurados</h2>
+      
+      @if (formConfig()?.fields && formConfig()!.fields.length > 0) {
+        <div class="fields-list">
+          @for (field of formConfig()!.fields; track field.id; let idx = $index) {
+            <div class="field-card" [class.editing]="editingFieldId() === field.id">
+              <div class="field-header">
+                <div class="field-info">
+                  <span class="field-order">#{{ field.order }}</span>
+                  <span class="field-type-badge">{{ getFieldTypeLabel(field.type) }}</span>
+                  <strong>{{ field.label }}</strong>
+                  <code>{{ field.name }}</code>
+                </div>
+                <div class="field-actions">
+                  <button
+                    type="button"
+                    class="btn-icon"
+                    title="Mover arriba"
+                    (click)="moveFieldUp(idx)"
+                    [disabled]="idx === 0"
+                  >
+                    ⬆️
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-icon"
+                    title="Mover abajo"
+                    (click)="moveFieldDown(idx)"
+                    [disabled]="idx === formConfig()!.fields.length - 1"
+                  >
+                    ⬇️
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-icon edit"
+                    title="Editar"
+                    (click)="editField(field)"
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-icon delete"
+                    title="Eliminar"
+                    (click)="deleteField(field.id)"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </div>
+              
+              <div class="field-properties">
+                @if (field.properties.required) {
+                  <span class="property-tag">Requerido</span>
+                }
+                @if (field.properties.disabled) {
+                  <span class="property-tag">Deshabilitado</span>
+                }
+                @if (field.properties.placeholder) {
+                  <span class="property-tag">Placeholder: {{ field.properties.placeholder }}</span>
+                }
+                @if (field.properties.minLength) {
+                  <span class="property-tag">Min: {{ field.properties.minLength }}</span>
+                }
+                @if (field.properties.maxLength) {
+                  <span class="property-tag">Max: {{ field.properties.maxLength }}</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-state">
+          <p>📝 No hay campos configurados todavía</p>
+          <p>Comienza agregando tu primer campo desde el panel de la izquierda</p>
+        </div>
+      }
+    </section>
+  </div>
+</div>
