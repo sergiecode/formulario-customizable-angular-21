@@ -70,6 +70,20 @@ export class FormRendererComponent implements OnInit, OnDestroy {
         validators.push(Validators.pattern(field.properties.pattern));
       }
 
+      // Validadores específicos por tipo de campo
+      if (field.type === 'email') {
+        validators.push(Validators.email);
+      }
+
+      if (field.type === 'number') {
+        if (field.properties.min !== undefined && field.properties.min !== null) {
+          validators.push(Validators.min(field.properties.min));
+        }
+        if (field.properties.max !== undefined && field.properties.max !== null) {
+          validators.push(Validators.max(field.properties.max));
+        }
+      }
+
       // Crear el control con valor por defecto y validadores
       const defaultValue = this.getDefaultValue(field);
       const control = new FormControl(
@@ -97,7 +111,16 @@ export class FormRendererComponent implements OnInit, OnDestroy {
     switch (field.type) {
       case 'checkbox':
         return false;
+      case 'number':
+        return null;
       case 'text':
+      case 'email':
+      case 'tel':
+      case 'url':
+      case 'password':
+      case 'date':
+      case 'time':
+      case 'datetime-local':
       case 'textarea':
       default:
         return '';

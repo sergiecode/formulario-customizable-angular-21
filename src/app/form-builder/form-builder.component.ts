@@ -19,9 +19,24 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   
   // Tipos de campos disponibles
   fieldTypes: { value: FieldType; label: string }[] = [
-    { value: 'text', label: 'Input Text' },
-    { value: 'textarea', label: 'Textarea' },
+    { value: 'text', label: 'Texto' },
+    { value: 'number', label: 'Número' },
+    { value: 'email', label: 'Email' },
+    { value: 'tel', label: 'Teléfono' },
+    { value: 'url', label: 'URL' },
+    { value: 'date', label: 'Fecha' },
+    { value: 'time', label: 'Hora' },
+    { value: 'datetime-local', label: 'Fecha y Hora' },
+    { value: 'password', label: 'Contraseña' },
+    { value: 'textarea', label: 'Área de Texto' },
     { value: 'checkbox', label: 'Checkbox' }
+  ];
+
+  // Opciones de ancho
+  widthOptions = [
+    { value: 'full', label: '100% (Ancho completo)' },
+    { value: 'half', label: '50% (Mitad)' },
+    { value: 'third', label: '33% (Un tercio)' }
   ];
 
   constructor(
@@ -54,11 +69,16 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
       label: ['', Validators.required],
       name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]+$/)]],
       order: [0, [Validators.required, Validators.min(0)]],
+      width: ['full', Validators.required],
       required: [false],
       placeholder: [''],
       disabled: [false],
       minLength: [null],
       maxLength: [null],
+      min: [null],
+      max: [null],
+      step: [null],
+      allowNegative: [true],
       defaultValue: [null]
     });
   }
@@ -79,12 +99,17 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
       label: formValue.label,
       name: formValue.name,
       order: formValue.order,
+      width: formValue.width,
       properties: {
         required: formValue.required,
         placeholder: formValue.placeholder,
         disabled: formValue.disabled,
         minLength: formValue.minLength,
-        maxLength: formValue.maxLength
+        maxLength: formValue.maxLength,
+        min: formValue.min,
+        max: formValue.max,
+        step: formValue.step,
+        allowNegative: formValue.allowNegative
       },
       defaultValue: formValue.defaultValue
     };
@@ -103,11 +128,16 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
       label: field.label,
       name: field.name,
       order: field.order,
+      width: field.width,
       required: field.properties.required || false,
       placeholder: field.properties.placeholder || '',
       disabled: field.properties.disabled || false,
       minLength: field.properties.minLength || null,
       maxLength: field.properties.maxLength || null,
+      min: field.properties.min || null,
+      max: field.properties.max || null,
+      step: field.properties.step || null,
+      allowNegative: field.properties.allowNegative !== undefined ? field.properties.allowNegative : true,
       defaultValue: field.defaultValue || null
     });
   }
@@ -126,12 +156,17 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
       label: formValue.label,
       name: formValue.name,
       order: formValue.order,
+      width: formValue.width,
       properties: {
         required: formValue.required,
         placeholder: formValue.placeholder,
         disabled: formValue.disabled,
         minLength: formValue.minLength,
-        maxLength: formValue.maxLength
+        maxLength: formValue.maxLength,
+        min: formValue.min,
+        max: formValue.max,
+        step: formValue.step,
+        allowNegative: formValue.allowNegative
       },
       defaultValue: formValue.defaultValue
     };
@@ -205,8 +240,10 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     
     this.fieldForm.reset({
       type: 'text',
+      width: 'full',
       required: false,
       disabled: false,
+      allowNegative: true,
       order: nextOrder
     });
   }

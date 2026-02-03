@@ -16,72 +16,118 @@
           }
 
           <form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()" class="dynamic-form">
-            @for (field of getSortedFields(); track field.id) {
-              <div class="form-field">
-                <!-- Campo Text -->
-                @if (field.type === 'text') {
-                  <label [for]="field.name" class="field-label">
-                    {{ field.label }}
-                    @if (field.properties.required) {
-                      <span class="required-mark">*</span>
-                    }
-                  </label>
-                  <input
-                    [id]="field.name"
-                    [formControlName]="field.name"
-                    type="text"
-                    class="form-input"
-                    [class.error-input]="hasError(field.name)"
-                    [placeholder]="field.properties.placeholder || ''"
-                  />
-                  @if (hasError(field.name)) {
-                    <span class="error-message">{{ getErrorMessage(field) }}</span>
-                  }
-                }
-
-                <!-- Campo Textarea -->
-                @if (field.type === 'textarea') {
-                  <label [for]="field.name" class="field-label">
-                    {{ field.label }}
-                    @if (field.properties.required) {
-                      <span class="required-mark">*</span>
-                    }
-                  </label>
-                  <textarea
-                    [id]="field.name"
-                    [formControlName]="field.name"
-                    class="form-textarea"
-                    [class.error-input]="hasError(field.name)"
-                    [placeholder]="field.properties.placeholder || ''"
-                    rows="4"
-                  ></textarea>
-                  @if (hasError(field.name)) {
-                    <span class="error-message">{{ getErrorMessage(field) }}</span>
-                  }
-                }
-
-                <!-- Campo Checkbox -->
-                @if (field.type === 'checkbox') {
-                  <div class="checkbox-wrapper">
-                    <input
-                      [id]="field.name"
-                      [formControlName]="field.name"
-                      type="checkbox"
-                      class="form-checkbox"
-                    />
-                    <label [for]="field.name" class="checkbox-label">
+            <div class="form-grid">
+              @for (field of getSortedFields(); track field.id) {
+                <div class="form-field" [attr.data-width]="field.width">
+                  <!-- Campos de texto: text, email, tel, url, password -->
+                  @if (field.type === 'text' || field.type === 'email' || field.type === 'tel' || field.type === 'url' || field.type === 'password') {
+                    <label [for]="field.name" class="field-label">
                       {{ field.label }}
                       @if (field.properties.required) {
                         <span class="required-mark">*</span>
                       }
                     </label>
-                  </div>
-                  @if (hasError(field.name)) {
-                    <span class="error-message">{{ getErrorMessage(field) }}</span>
+                    <input
+                      [id]="field.name"
+                      [formControlName]="field.name"
+                      [type]="field.type"
+                      class="form-input"
+                      [class.error-input]="hasError(field.name)"
+                      [placeholder]="field.properties.placeholder || ''"
+                    />
+                    @if (hasError(field.name)) {
+                      <span class="error-message">{{ getErrorMessage(field) }}</span>
+                    }
                   }
-                }
-              </div>
-            }
+
+                  <!-- Campo Number -->
+                  @if (field.type === 'number') {
+                    <label [for]="field.name" class="field-label">
+                      {{ field.label }}
+                      @if (field.properties.required) {
+                        <span class="required-mark">*</span>
+                      }
+                    </label>
+                    <input
+                      [id]="field.name"
+                      [formControlName]="field.name"
+                      type="number"
+                      class="form-input"
+                      [class.error-input]="hasError(field.name)"
+                      [placeholder]="field.properties.placeholder || ''"
+                      [attr.min]="field.properties.min"
+                      [attr.max]="field.properties.max"
+                      [attr.step]="field.properties.step"
+                    />
+                    @if (hasError(field.name)) {
+                      <span class="error-message">{{ getErrorMessage(field) }}</span>
+                    }
+                  }
+
+                  <!-- Campos de fecha y hora -->
+                  @if (field.type === 'date' || field.type === 'time' || field.type === 'datetime-local') {
+                    <label [for]="field.name" class="field-label">
+                      {{ field.label }}
+                      @if (field.properties.required) {
+                        <span class="required-mark">*</span>
+                      }
+                    </label>
+                    <input
+                      [id]="field.name"
+                      [formControlName]="field.name"
+                      [type]="field.type"
+                      class="form-input"
+                      [class.error-input]="hasError(field.name)"
+                    />
+                    @if (hasError(field.name)) {
+                      <span class="error-message">{{ getErrorMessage(field) }}</span>
+                    }
+                  }
+
+                  <!-- Campo Textarea -->
+                  @if (field.type === 'textarea') {
+                    <label [for]="field.name" class="field-label">
+                      {{ field.label }}
+                      @if (field.properties.required) {
+                        <span class="required-mark">*</span>
+                      }
+                    </label>
+                    <textarea
+                      [id]="field.name"
+                      [formControlName]="field.name"
+                      class="form-textarea"
+                      [class.error-input]="hasError(field.name)"
+                      [placeholder]="field.properties.placeholder || ''"
+                      rows="4"
+                    ></textarea>
+                    @if (hasError(field.name)) {
+                      <span class="error-message">{{ getErrorMessage(field) }}</span>
+                    }
+                  }
+
+                  <!-- Campo Checkbox -->
+                  @if (field.type === 'checkbox') {
+                    <div class="checkbox-wrapper">
+                      <input
+                        [id]="field.name"
+                        [formControlName]="field.name"
+                        type="checkbox"
+                        class="form-checkbox"
+                      />
+                      <label [for]="field.name" class="checkbox-label">
+                        {{ field.label }}
+                        @if (field.properties.required) {
+                          <span class="required-mark">*</span>
+                        }
+                      </label>
+                    </div>
+                    @if (hasError(field.name)) {
+                      <span class="error-message">{{ getErrorMessage(field) }}</span>
+                    }
+                  }
+                </div>
+              }
+            </div>
 
             <div class="form-actions">
               <button type="submit" class="btn btn-submit" [disabled]="dynamicForm.invalid">

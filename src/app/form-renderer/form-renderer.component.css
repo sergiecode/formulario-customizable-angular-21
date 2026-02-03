@@ -61,6 +61,12 @@
 .dynamic-form {
   display: flex;
   flex-direction: column;
+  gap: 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
   gap: 20px;
 }
 
@@ -68,6 +74,19 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+/* Anchos de campos */
+.form-field[data-width="full"] {
+  grid-column: span 12;
+}
+
+.form-field[data-width="half"] {
+  grid-column: span 6;
+}
+
+.form-field[data-width="third"] {
+  grid-column: span 4;
 }
 
 .field-label {
