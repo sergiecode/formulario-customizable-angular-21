@@ -158,9 +158,9 @@
 .form-actions {
   display: flex;
   gap: 12px;
-  margin-top: 10px;
-  padding-top: 20px;
-  border-top: 2px solid #f0f0f0;
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 2px solid rgba(0, 212, 255, 0.2);
 }
 
 .btn {

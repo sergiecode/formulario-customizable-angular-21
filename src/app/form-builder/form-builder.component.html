@@ -280,6 +280,9 @@
               </div>
               
               <div class="field-properties">
+                <span class="property-tag width-tag">
+                  {{ field.width === 'full' ? '100%' : field.width === 'half' ? '50%' : '33%' }}
+                </span>
                 @if (field.properties.required) {
                   <span class="property-tag">Requerido</span>
                 }
